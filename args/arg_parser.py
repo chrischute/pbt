@@ -12,6 +12,8 @@ class ArgParser(object):
                                  help='Number of models in a population.')
         self.parser.add_argument('--dataset', type=str, default='CIFAR10', choices=('CIFAR10',),
                                  help='Dataset to train on.')
+        self.parser.add_argument('--ckpt_dir', type=str, default='ckpts/',
+                                 help='Directory to save checkpoints and population info.')
 
     def parse_args(self):
         args = self.parser.parse_args()
