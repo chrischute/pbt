@@ -7,6 +7,8 @@ class ArgParser(object):
         self.parser = argparse.ArgumentParser(description='Population-Based Training')
         self.parser.add_argument('--gpu_ids', type=str, default='0',
                                  help='Comma-separated list of GPUs to use.')
+        self.parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
+        self.parser.add_argument('--num_workers', type=int, default=4, help='Number of workers per data loader.')
         self.parser.add_argument('--num_epochs', type=int, default=3,
                                  help='Number of epochs to train for. If 0, train forever.')
         self.parser.add_argument('--population_size', type=int, default=3,
