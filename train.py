@@ -139,6 +139,10 @@ def train(args, member_id, epoch, gpu_id):
             for param_group in optimizer.param_groups:
                 param_group[h] *= hyperparameters[h]
 
+    if epoch_info is None:
+        h_dict = {p: v for d in optimizer.param_groups for p, v in d.items()}
+        epoch_info = {'hyperparameters': h_dict}
+
     # Get logger, evaluator, saver
     train_loader = PBTDataLoader(args.dataset, phase='train', is_training=False,
                                  batch_size=args.batch_size, num_workers=args.num_workers)
