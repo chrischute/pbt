@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 
 class Member(object):
     """Member of the population. Used for saving info during training."""
@@ -33,6 +35,7 @@ class Member(object):
         """
         assert 0 < epoch_num <= self.num_epochs(), 'epoch_num is out of bounds.'
 
-        epoch_info = self._history[epoch_num - 1]
+        # Deep copy to avoid changing the population during explore
+        epoch_info = deepcopy(self._history[epoch_num - 1])
 
         return epoch_info

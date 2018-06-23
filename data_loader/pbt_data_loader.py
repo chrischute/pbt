@@ -4,7 +4,9 @@ import torchvision.transforms as transforms
 
 
 class PBTDataLoader(data.DataLoader):
-    def __init__(self, dataset_name, is_training, batch_size, num_workers):
+    def __init__(self, dataset_name, phase, is_training, batch_size, num_workers):
+
+        self.phase = phase
 
         if dataset_name == 'CIFAR10':
             if is_training:

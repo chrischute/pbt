@@ -7,11 +7,10 @@ import torch.nn as nn
 
 class ModelSaver(object):
     """Class to save and load model ckpts."""
-    def __init__(self, save_dir, epochs_per_save, max_ckpts, metric_name='val_loss', maximize_metric=False):
+    def __init__(self, save_dir, max_ckpts, metric_name='val_loss', maximize_metric=False):
         """
         Args:
             save_dir: Directory to save checkpoints.
-            epochs_per_save: Number of epochs between each save.
             max_ckpts: Maximum number of checkpoints to keep before overwriting old ones.
             metric_name: Name of metric used to determine best model.
             maximize_metric: If true, best checkpoint is that which maximizes the metric value passed in via save.
@@ -20,7 +19,6 @@ class ModelSaver(object):
         super(ModelSaver, self).__init__()
 
         self.save_dir = save_dir
-        self.epochs_per_save = epochs_per_save
         self.max_ckpts = max_ckpts
         self.metric_name = metric_name
         self.maximize_metric = maximize_metric
@@ -35,27 +33,26 @@ class ModelSaver(object):
                 or (self.maximize_metric and self.best_metric_val < metric_val)
                 or (not self.maximize_metric and self.best_metric_val > metric_val))
 
-    def save(self, epoch, model, optimizer, lr_scheduler, device, metric_val):
+    def save(self, epoch, model, optimizer, device, metric_val):
         """If this epoch corresponds to a save epoch, save model parameters to disk.
 
         Args:
             epoch: Epoch to stamp on the checkpoint.
             model: Model to save.
             optimizer: Optimizer for model parameters.
-            lr_scheduler: Learning rate scheduler for optimizer.
             device: Device where the model/optimizer parameters belong.
             metric_val: Value for determining whether checkpoint is best so far.
+
+        Returns:
+            ckpt_path: Path to checkpoint that was saved, or None.
         """
-        if epoch % self.epochs_per_save != 0:
-            return
 
         ckpt_dict = {
             'ckpt_info': {'epoch': epoch, self.metric_name: metric_val},
             'model_name': model.module.__class__.__name__,
             'model_args': model.module.args_dict(),
             'model_state': model.to('cpu').state_dict(),
-            'optimizer': optimizer.state_dict(),
-            'lr_scheduler': lr_scheduler.state_dict()
+            'optimizer': optimizer.state_dict()
         }
         model.to(device)
 
@@ -73,6 +70,8 @@ class ModelSaver(object):
         if len(self.ckpt_paths) > self.max_ckpts:
             oldest_ckpt = self.ckpt_paths.pop(0)
             os.remove(oldest_ckpt)
+
+        return ckpt_path
 
     @classmethod
     def load_model(cls, ckpt_path, gpu_ids):
