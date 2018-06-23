@@ -22,7 +22,7 @@ class ModelEvaluator(object):
         self.data_loaders = data_loaders
         self.epochs_per_eval = epochs_per_eval
         self.logger = logger
-        self.loss_fn = nn.BCEWithLogitsLoss()
+        self.loss_fn = nn.CrossEntropyLoss()
         self.max_eval = None if max_eval is None or max_eval < 0 else max_eval
 
     def evaluate(self, model, device, epoch=None):
@@ -75,7 +75,7 @@ class ModelEvaluator(object):
             num_examples = min(num_examples, self.max_eval)
 
         # Sample from the data loader and record model outputs
-        loss_fn = nn.BCEWithLogitsLoss()
+        loss_fn = nn.CrossEntropyLoss()
         num_evaluated = 0
         with tqdm(total=num_examples, unit=' ' + phase) as progress_bar:
             for inputs, targets in data_loader:

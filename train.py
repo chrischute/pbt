@@ -142,7 +142,7 @@ def train(args, member_id, epoch, gpu_id):
     # Get logger, evaluator, saver
     train_loader = PBTDataLoader(args.dataset, phase='train', is_training=False,
                                  batch_size=args.batch_size, num_workers=args.num_workers)
-    loss_fn = nn.BCEWithLogitsLoss()
+    loss_fn = nn.CrossEntropyLoss()
     logger = TrainLogger(args, epoch, len(train_loader.dataset))
     eval_loaders = [PBTDataLoader(args.dataset, phase='train', is_training=False,
                                   batch_size=args.batch_size, num_workers=args.num_workers),
