@@ -1,4 +1,3 @@
-import numpy as np
 import random
 import torch
 import torch.nn as nn
@@ -11,11 +10,10 @@ from .output_aggregator import OutputAggregator
 
 class ModelEvaluator(object):
     """Class for evaluating a model during training."""
-    def __init__(self, task_type, data_loaders, logger,
+    def __init__(self, data_loaders, logger,
                  agg_method=None, num_visuals=None, max_eval=None, epochs_per_eval=1):
         """
         Args:
-            task_type: Type of task. One of 'classification' or 'segmentation'.
             data_loaders: List of Torch `DataLoader`s to sample from.
             logger: Logger for plotting to console and TensorBoard.
             agg_method: Method used to aggregate outputs. None, 'max', 'mean', or 'logreg'.
@@ -30,7 +28,6 @@ class ModelEvaluator(object):
         self.loss_fn = nn.BCEWithLogitsLoss()
         self.num_visuals = num_visuals
         self.max_eval = None if max_eval is None or max_eval < 0 else max_eval
-        self.task_type = task_type
 
     def evaluate(self, model, device, epoch=None):
         """Evaluate a model at the end of the given epoch.

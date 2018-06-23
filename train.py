@@ -139,16 +139,15 @@ def train(args, member_id, epoch, gpu_id):
                 param_group[h] *= hyperparameters[h]
 
     # Get logger, evaluator, saver
-    train_loader = PBTDataLoader(args, phase='train', is_training=False,
+    train_loader = PBTDataLoader(args.dataset, phase='train', is_training=False,
                                  batch_size=args.batch_size, num_workers=args.num_workers)
     loss_fn = nn.BCEWithLogitsLoss()
     logger = TrainLogger(args, len(train_loader.dataset), train_loader.dataset.pixel_dict)
-    eval_loaders = [PBTDataLoader(args, phase='train', is_training=False,
+    eval_loaders = [PBTDataLoader(args.dataset, phase='train', is_training=False,
                                   batch_size=args.batch_size, num_workers=args.num_workers),
-                    PBTDataLoader(args, phase='val', is_training=False,
+                    PBTDataLoader(args.dataset, phase='val', is_training=False,
                                   batch_size=args.batch_size, num_workers=args.num_workers)]
-    evaluator = ModelEvaluator(args.task_type, eval_loaders, logger,
-                               args.agg_method, args.num_visuals, args.max_eval, args.epochs_per_eval)
+    evaluator = ModelEvaluator(eval_loaders, logger, args.agg_method, args.num_visuals, args.max_eval)
     saver = ModelSaver(args.save_dir, args.max_ckpts, args.metric_name, args.maximize_metric)
 
     # Train for one epoch
