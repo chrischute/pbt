@@ -118,7 +118,7 @@ def train(args, member_id, epoch, gpu_id):
                 # Multiply by random factor between 0.8 and 1.2
                 h *= random.uniform(0.8, 1.2)
 
-    if epoch_info:
+    if epoch_info is not None:
         model, ckpt_info = ModelSaver.load_model(epoch_info['ckpt_path'], gpu_ids=[gpu_id])
     else:
         model_fn = models.__dict__[args.model]
@@ -129,8 +129,8 @@ def train(args, member_id, epoch, gpu_id):
 
     # Get optimizer
     optimizer = util.get_optimizer(model.parameters(), args)
-    if args.ckpt_path:
-        ModelSaver.load_optimizer(args.ckpt_path, optimizer)
+    if epoch_info is not None:
+        ModelSaver.load_optimizer(epoch_info['ckpt_path'], optimizer)
     if do_explore:
         # Update optimizer hyperparameters to explored values
         hyperparameters = epoch_info['hyperparameters']
