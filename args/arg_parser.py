@@ -9,7 +9,7 @@ class ArgParser(object):
                                  help='Comma-separated list of GPUs to use.')
         self.parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
         self.parser.add_argument('--num_workers', type=int, default=4, help='Number of workers per data loader.')
-        self.parser.add_argument('--num_epochs', type=int, default=3,
+        self.parser.add_argument('--num_epochs', type=int, default=30,
                                  help='Number of epochs to train for. If 0, train forever.')
         self.parser.add_argument('--population_size', type=int, default=3,
                                  help='Number of models in a population.')
@@ -38,10 +38,12 @@ class ArgParser(object):
                                  help='Weight decay (i.e., L2 regularization factor).')
         self.parser.add_argument('--iters_per_print', type=int, default=4,
                                  help='Number of iterations between printing loss to the console and TensorBoard.')
+        self.parser.add_argument('--search_space', type=str, default='lr,momentum,weight_decay')
 
     def parse_args(self):
         args = self.parser.parse_args()
         args.gpu_ids = [int(i) for i in str(args.gpu_ids).split(',') if int(i) >= 0]
         args.device = 'cpu' if len(args.gpu_ids) == 0 else 'cuda:{}'.format(args.gpu_ids[0])
+        args.search_space = str(args.search_space).split(',')
 
         return args
