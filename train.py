@@ -13,6 +13,7 @@ from data_loader import PBTDataLoader
 from evaluator import ModelEvaluator
 from logger import TrainLogger
 from member import Member
+from pool import NonDaemonicPool
 from saver import ModelSaver
 
 
@@ -20,7 +21,7 @@ def main(args):
     # Construct queue of jobs and pool to read from the queue
     population_queue = mp.Queue()
     num_trainers = len(args.gpu_ids)
-    trainer_pool = mp.Pool(num_trainers, trainer_loop, (args, population_queue))
+    trainer_pool = NonDaemonicPool(num_trainers, trainer_loop, (args, population_queue))
 
     epoch = 1
     while epoch != args.num_epochs:
