@@ -23,7 +23,7 @@ class ArgParser(object):
                                  help='Metric to optimize during PBT. Make sure to also set --maximize_metric')
         self.parser.add_argument('--maximize_metric', type=util.str_to_bool, default=False,
                                  help='If true, maximize the metric. Else minimize.')
-        self.parser.add_argument('--max_eval', type=int, default=-1,
+        self.parser.add_argument('--max_eval', type=int, default=1000,
                                  help='Max number of examples to evaluate from the training set.')
         self.parser.add_argument('--save_dir', type=str, default='logs', help='Directory for saving logs.')
         self.parser.add_argument('--learning_rate', type=float, default=1e-1, help='Initial learning rate.')

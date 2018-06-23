@@ -147,7 +147,7 @@ def train(args, member_id, epoch, gpu_id):
                                   batch_size=args.batch_size, num_workers=args.num_workers),
                     PBTDataLoader(args.dataset, phase='val', is_training=False,
                                   batch_size=args.batch_size, num_workers=args.num_workers)]
-    evaluator = ModelEvaluator(eval_loaders, logger, args.num_visuals, args.max_eval)
+    evaluator = ModelEvaluator(eval_loaders, logger, args.max_eval)
     saver = ModelSaver(args.save_dir, args.max_ckpts, args.metric_name, args.maximize_metric)
 
     # Train for one epoch
