@@ -5,23 +5,20 @@ import torch.nn.functional as F
 import util
 
 from tqdm import tqdm
-from .output_aggregator import OutputAggregator
 
 
 class ModelEvaluator(object):
     """Class for evaluating a model during training."""
-    def __init__(self, data_loaders, logger,
-                 agg_method=None, num_visuals=None, max_eval=None, epochs_per_eval=1):
+    def __init__(self, data_loaders, logger, num_visuals=None, max_eval=None, epochs_per_eval=1):
         """
         Args:
             data_loaders: List of Torch `DataLoader`s to sample from.
             logger: Logger for plotting to console and TensorBoard.
-            agg_method: Method used to aggregate outputs. None, 'max', 'mean', or 'logreg'.
             num_visuals: Number of visuals to display.
             max_eval: Maximum number of examples to evaluate at each evaluation.
             epochs_per_eval: Number of epochs between each evaluation.
         """
-        self.aggregator = None if not agg_method else OutputAggregator(agg_method, num_bins=10, num_epochs=5)
+        self.aggregator = None
         self.data_loaders = data_loaders
         self.epochs_per_eval = epochs_per_eval
         self.logger = logger
@@ -151,6 +148,5 @@ class ModelEvaluator(object):
             metrics.update({
                 phase + '_' + 'loss': loss_meter.avg
             })
-            # TODO: Curves for segmentation.
 
         return metrics, curves
