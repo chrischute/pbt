@@ -25,6 +25,7 @@ class ArgParser(object):
                                  help='If true, maximize the metric. Else minimize.')
         self.parser.add_argument('--max_eval', type=int, default=-1,
                                  help='Max number of examples to evaluate from the training set.')
+        self.parser.add_argument('--save_dir', type=str, default='logs', help='Directory for saving logs.')
         self.parser.add_argument('--learning_rate', type=float, default=1e-1, help='Initial learning rate.')
         self.parser.add_argument('--optimizer', type=str, default='sgd', choices=('sgd', 'adam'), help='Optimizer.')
         self.parser.add_argument('--sgd_momentum', type=float, default=0.9, help='SGD momentum (SGD only).')

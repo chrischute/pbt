@@ -15,11 +15,7 @@ class BaseLogger(object):
         self.batch_size = args.batch_size
         self.dataset_len = dataset_len
         self.device = args.device
-        self.img_format = args.img_format
-        self.save_dir = args.save_dir if args.is_training else args.results_dir
-        self.task_type = args.task_type
-        self.num_visuals = args.num_visuals
-        self.use_contrast = args.use_contrast
+        self.save_dir = args.save_dir
         self.log_path = os.path.join(self.save_dir, '{}.log'.format(args.name))
         log_dir = os.path.join('logs', args.name + '_' + datetime.now().strftime('%b%d_%H%M'))
         self.summary_writer = SummaryWriter(log_dir=log_dir)
