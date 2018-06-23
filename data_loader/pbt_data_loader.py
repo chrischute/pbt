@@ -7,6 +7,7 @@ class PBTDataLoader(data.DataLoader):
     def __init__(self, dataset_name, phase, is_training, batch_size, num_workers):
 
         self.phase = phase
+        self.batch_size_ = batch_size
 
         if dataset_name == 'CIFAR10':
             if is_training:
