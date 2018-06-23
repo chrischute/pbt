@@ -34,6 +34,8 @@ class ArgParser(object):
         self.parser.add_argument('--adam_beta_2', type=float, default=0.999, help='Adam beta 2 (Adam only).')
         self.parser.add_argument('--weight_decay', type=float, default=5e-4,
                                  help='Weight decay (i.e., L2 regularization factor).')
+        self.parser.add_argument('--iters_per_print', type=int, default=4,
+                                 help='Number of iterations between printing loss to the console and TensorBoard.')
 
     def parse_args(self):
         args = self.parser.parse_args()

@@ -9,12 +9,7 @@ class TrainLogger(BaseLogger):
     def __init__(self, args, epoch, dataset_len):
         super(TrainLogger, self).__init__(args, epoch, dataset_len)
 
-        assert args.is_training
-        assert args.iters_per_print % args.batch_size == 0, "iters_per_print must be divisible by batch_size"
-        assert args.iters_per_visual % args.batch_size == 0, "iters_per_visual must be divisible by batch_size"
-
         self.iters_per_print = args.iters_per_print
-        self.iters_per_visual = args.iters_per_visual
         self.experiment_name = args.name
         self.max_eval = args.max_eval
         self.num_epochs = args.num_epochs
@@ -42,10 +37,6 @@ class TrainLogger(BaseLogger):
             self.loss_meter.reset()
 
             self.write(message)
-
-        # Periodically visualize up to num_visuals training examples from the batch
-        if self.iter % self.iters_per_visual == 0:
-            self.visualize(inputs, logits, targets, phase='train')
 
     def end_iter(self):
         """Log info for end of an iteration."""
