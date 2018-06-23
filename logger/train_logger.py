@@ -6,8 +6,8 @@ from .base_logger import BaseLogger
 
 class TrainLogger(BaseLogger):
     """Class for logging training info to the console and saving model parameters to disk."""
-    def __init__(self, args, dataset_len, pixel_dict):
-        super(TrainLogger, self).__init__(args, dataset_len, pixel_dict)
+    def __init__(self, args, dataset_len):
+        super(TrainLogger, self).__init__(args, dataset_len)
 
         assert args.is_training
         assert args.iters_per_print % args.batch_size == 0, "iters_per_print must be divisible by batch_size"

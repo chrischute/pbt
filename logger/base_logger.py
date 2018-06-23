@@ -5,7 +5,7 @@ from tensorboardX import SummaryWriter
 
 
 class BaseLogger(object):
-    def __init__(self, args, dataset_len, pixel_dict):
+    def __init__(self, args, dataset_len):
 
         def round_down(x, m):
             """Round x down to a multiple of m."""
@@ -31,7 +31,6 @@ class BaseLogger(object):
         self.global_step = round_down((self.epoch - 1) * dataset_len, args.batch_size)
         self.iter_start_time = None
         self.epoch_start_time = None
-        self.pixel_dict = pixel_dict
 
     def _log_scalars(self, scalar_dict, print_to_stdout=True):
         """Log all values in a dict as scalars to TensorBoard."""

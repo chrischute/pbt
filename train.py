@@ -142,7 +142,7 @@ def train(args, member_id, epoch, gpu_id):
     train_loader = PBTDataLoader(args.dataset, phase='train', is_training=False,
                                  batch_size=args.batch_size, num_workers=args.num_workers)
     loss_fn = nn.BCEWithLogitsLoss()
-    logger = TrainLogger(args, len(train_loader.dataset), train_loader.dataset.pixel_dict)
+    logger = TrainLogger(args, len(train_loader.dataset))
     eval_loaders = [PBTDataLoader(args.dataset, phase='train', is_training=False,
                                   batch_size=args.batch_size, num_workers=args.num_workers),
                     PBTDataLoader(args.dataset, phase='val', is_training=False,
