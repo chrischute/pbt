@@ -5,7 +5,7 @@ from tensorboardX import SummaryWriter
 
 
 class BaseLogger(object):
-    def __init__(self, args, dataset_len):
+    def __init__(self, args, epoch, dataset_len):
 
         def round_down(x, m):
             """Round x down to a multiple of m."""
@@ -20,7 +20,7 @@ class BaseLogger(object):
         log_dir = os.path.join('logs', args.name + '_' + datetime.now().strftime('%b%d_%H%M'))
         self.summary_writer = SummaryWriter(log_dir=log_dir)
 
-        self.epoch = args.start_epoch
+        self.epoch = epoch
         # Current iteration in epoch (i.e., # examples seen in the current epoch)
         self.iter = 0
         # Current iteration overall (i.e., total # of examples seen)

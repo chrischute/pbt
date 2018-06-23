@@ -4,9 +4,9 @@ from .base_logger import BaseLogger
 
 class TestLogger(BaseLogger):
     """Class for logging test info to the console and saving test outputs to disk."""
-    def __init__(self, args, dataset_len, pixel_dict):
+    def __init__(self, args, epoch, dataset_len):
         assert not args.is_training
-        super(TestLogger, self).__init__(args, dataset_len, pixel_dict)
+        super(TestLogger, self).__init__(args, epoch, dataset_len)
 
     def start_iter(self):
         """Log info for start of an iteration."""
