@@ -14,7 +14,6 @@ class ModelEvaluator(object):
         Args:
             data_loaders: List of Torch `DataLoader`s to sample from.
             logger: Logger for plotting to console and TensorBoard.
-            num_visuals: Number of visuals to display.
             max_eval: Maximum number of examples to evaluate at each evaluation.
             epochs_per_eval: Number of epochs between each evaluation.
         """

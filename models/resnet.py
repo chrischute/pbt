@@ -100,6 +100,9 @@ class ResNet(nn.Module):
         layer_planes = 16
         block = Bottleneck
 
+        self.model_depth = model_depth
+        self.num_classes = num_classes
+
         self.inplanes = layer_planes
         super(ResNet, self).__init__()
         self.conv1 = nn.Conv2d(3, layer_planes, kernel_size=3, stride=1, padding=1,
@@ -151,6 +154,13 @@ class ResNet(nn.Module):
         x = self.fc(x)
 
         return x
+
+    def args_dict(self):
+        args_dict = {
+            'model_depth': self.model_depth,
+            'num_classes': self.num_classes
+        }
+        return args_dict
 
 
 def resnet50(pretrained=False, **kwargs):
