@@ -23,6 +23,16 @@ class ArgParser(object):
                                  help='Metric to optimize during PBT. Make sure to also set --maximize_metric')
         self.parser.add_argument('--maximize_metric', type=util.str_to_bool, default=False,
                                  help='If true, maximize the metric. Else minimize.')
+        self.parser.add_argument('--max_eval', type=int, default=-1,
+                                 help='Max number of examples to evaluate from the training set.')
+        self.parser.add_argument('--learning_rate', type=float, default=1e-1, help='Initial learning rate.')
+        self.parser.add_argument('--optimizer', type=str, default='sgd', choices=('sgd', 'adam'), help='Optimizer.')
+        self.parser.add_argument('--sgd_momentum', type=float, default=0.9, help='SGD momentum (SGD only).')
+        self.parser.add_argument('--sgd_dampening', type=float, default=0.9, help='SGD momentum (SGD only).')
+        self.parser.add_argument('--adam_beta_1', type=float, default=0.9, help='Adam beta 1 (Adam only).')
+        self.parser.add_argument('--adam_beta_2', type=float, default=0.999, help='Adam beta 2 (Adam only).')
+        self.parser.add_argument('--weight_decay', type=float, default=5e-4,
+                                 help='Weight decay (i.e., L2 regularization factor).')
 
     def parse_args(self):
         args = self.parser.parse_args()
