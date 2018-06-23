@@ -140,7 +140,8 @@ def train(args, member_id, epoch, gpu_id):
                 param_group[h] *= hyperparameters[h]
 
     if epoch_info is None:
-        h_dict = {p: v for d in optimizer.param_groups for p, v in d.items()}
+        # Note: Assumes a single hyperparameter value per param group
+        h_dict = {p: v[0] for d in optimizer.param_groups for p, v in d.items()}
         epoch_info = {'hyperparameters': h_dict}
 
     # Get logger, evaluator, saver
