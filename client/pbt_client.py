@@ -26,8 +26,6 @@ class PBTClient(object):
         self.client_id = client_id
         self.hyperparameters = self._read_config(config_path)
 
-        print(json.dumps(self.hyperparameters, indent=2))
-
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
         checkpoint = PBTCheckpoint(self.client_id, random.random(), {'lr': 0.01}, 'ckpts/best.pth.tar')
@@ -46,13 +44,21 @@ class PBTClient(object):
         should_exploit = literal_eval(str(self._client.should_exploit(self.client_id)))
         if should_exploit:
             checkpoint = self._client.exploit()
-            print('{}: EXPLOIT({})'.format(self.client_id, checkpoint.member_id()))
-            return True
+            if checkpoint.member_id() != self.client_id:
+                print('{}: EXPLOIT({})'.format(self.client_id, checkpoint.member_id()))
+                self.hyperparameters = {k: v for k, v in checkpoint.hyperparameters()}
+                print(json.dumps(self.hyperparameters, indent=2))
+                return True
 
         return False
 
     def explore(self):
         print('{}: EXPLORE'.format(self.client_id))
+        for k, v in self.hyperparameters.items():
+            mutation = random.choice((0.8, 1.2))
+            self.hyperparameters[k] = mutation * v
+
+        print(json.dumps(self.hyperparameters, indent=2))
 
     @staticmethod
     def _read_config(config_path):
