@@ -70,6 +70,10 @@ class PBTServer(object):
 
         return exploited_checkpoint
 
+    def port(self):
+        """Get the server's listening port."""
+        return self._port
+
     def shut_down(self):
         """Shut down the server."""
         self._server.shutdown()
