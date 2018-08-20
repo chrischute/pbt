@@ -70,6 +70,10 @@ class PBTServer(object):
 
         return exploited_checkpoint
 
+    def shut_down(self):
+        """Shut down the server."""
+        self._server.shutdown()
+
     def _get_best_checkpoint(self, member_id):
         """Get the best checkpoint for a member of the population,
         as rated by checkpoint metric values.

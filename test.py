@@ -14,16 +14,22 @@ def main():
     server = PBTServer(PORT, auth_key=AUTH_KEY)
     clients = [PBTClient(member_id, IP, PORT, AUTH_KEY) for member_id in range(NUM_MEMBERS)]
 
-    # Simulate some epochs
-    for _ in range(NUM_EPOCHS):
-        # Train for an epoch
-        for member in clients:
-            member.train_epoch()
+    try:
+        # Simulate some epochs
+        for _ in range(NUM_EPOCHS):
+            # Train for an epoch
+            for member in clients:
+                member.train_epoch()
 
-        # Exploit and explore
-        for member in clients:
-            if member.exploit():
-                member.explore()
+            # Exploit and explore
+            for member in clients:
+                if member.exploit():
+                    member.explore()
+
+    finally:
+        for client in clients:
+            client.shut_down()
+        server.shut_down()
 
 
 if __name__ == '__main__':

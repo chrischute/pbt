@@ -15,15 +15,15 @@ class PBTClient(object):
         PBTClientManager.register('save')
         PBTClientManager.register('should_exploit')
         PBTClientManager.register('exploit')
-        self.manager = PBTClientManager(address=(manager_ip, port), authkey=auth_key)
-        self.manager.connect()
+        self._client = PBTClientManager(address=(manager_ip, port), authkey=auth_key)
+        self._client.connect()
 
         self.member_id = member_id
 
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
         checkpoint = PBTCheckpoint(self.member_id, random.random(), {'lr': 0.01}, 'ckpts/best.pth.tar')
-        self.manager.save(checkpoint)
+        self._client.save(checkpoint)
 
         time.sleep(0.1)
 
@@ -31,9 +31,9 @@ class PBTClient(object):
 
     def exploit(self):
         """Possibly exploit another member of the population."""
-        should_exploit = literal_eval(str(self.manager.should_exploit(self.member_id)))
+        should_exploit = literal_eval(str(self._client.should_exploit(self.member_id)))
         if should_exploit:
-            checkpoint = self.manager.exploit()
+            checkpoint = self._client.exploit()
             print('{}: EXPLOIT({})'.format(self.member_id, checkpoint.member_id()))
             return True
 
@@ -41,3 +41,7 @@ class PBTClient(object):
 
     def explore(self):
         print('{}: EXPLORE'.format(self.member_id))
+
+    def shut_down(self):
+        """Shut down the connection to the server."""
+        self._client.shutdown()
