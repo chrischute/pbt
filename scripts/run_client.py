@@ -34,8 +34,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # PBT Connection Settings
-    parser.add_argument('--client_id', type=int, required=True,
-                        help='ID of PBT client. Must be unique for each member of the population.')
     parser.add_argument('--server_url', type=str, required=True,
                         help='URL or IP address of PBT server.')
     parser.add_argument('--server_port', type=int, default=7777,
