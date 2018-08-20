@@ -30,13 +30,14 @@ class PBTServer(object):
 
         self._checkpoints = {}  # Maps member ID -> list of PBTCheckpoints
         self._truncation_ratio = 0.2   # Ratio of population for truncation selection
+        self._num_clients = 0
 
         self._server.start()
 
     def get_id(self):
         """Get the next available ID for a client."""
-        client_id = self.num_clients
-        self.num_clients += 1
+        client_id = self._num_clients
+        self._num_clients += 1
 
         return client_id
 

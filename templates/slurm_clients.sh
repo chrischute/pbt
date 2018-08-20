@@ -26,4 +26,4 @@ echo "SLURMTMPDIR="$SLURMTMPDIR
 echo "working directory = "$SLURM_SUBMIT_DIR
 
 # Command to run on each node
-srun cd /deep/group/chute/pbt && python scripts/run_client.py --client_id=0 --server_url=deep6 --config_path=templates/config.csv
+srun python scripts/run_client.py --server_url=deep6 --config_path=templates/config.csv
