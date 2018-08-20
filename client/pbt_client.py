@@ -23,13 +23,14 @@ class PBTClient(object):
         self._client = PBTClientManager(address=(server_ip, server_port), authkey=auth_key)
         self._client.connect()
 
-        self.client_id = client_id
-        self.hyperparameters = self._read_config(config_path)
-        print(json.dumps(self.hyperparameters, indent=2))
+        self._client_id = client_id
+        self._hyperparameters = self._read_config(config_path)
+        print(json.dumps(self._hyperparameters, indent=2))
 
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
-        checkpoint = PBTCheckpoint(self.client_id, random.random(), {'lr': 0.01}, 'ckpts/best.pth.tar')
+        performance = random.random()
+        checkpoint = PBTCheckpoint(self._client_id, performance, self._hyperparameters, 'ckpts/best.pth.tar')
         self._client.save(checkpoint)
 
         time.sleep(10.)
@@ -42,25 +43,25 @@ class PBTClient(object):
         Returns:
             True if the client exploited another member, otherwise False.
         """
-        should_exploit = literal_eval(str(self._client.should_exploit(self.client_id)))
+        should_exploit = literal_eval(str(self._client.should_exploit(self._client_id)))
         if should_exploit:
             checkpoint = self._client.exploit()
-            if checkpoint.member_id() != self.client_id:
-                print('{}: EXPLOIT({})'.format(self.client_id, checkpoint.member_id()))
-                self.hyperparameters = checkpoint.hyperparameters().copy()
-                print(json.dumps(self.hyperparameters, indent=2))
+            if checkpoint.member_id() != self._client_id:
+                print('{}: EXPLOIT({})'.format(self._client_id, checkpoint.member_id()))
+                self._hyperparameters = checkpoint.hyperparameters().copy()
+                print(json.dumps(self._hyperparameters, indent=2))
                 return True
 
         return False
 
     def explore(self):
-        print('{}: EXPLORE'.format(self.client_id))
-        for k, v in self.hyperparameters.items():
+        print('{}: EXPLORE'.format(self._client_id))
+        for k, v in self._hyperparameters.items():
             mutation = random.choice([0.8, 1.2])
             print('Mutating {} from {} by {}'.format(k, v, mutation))
-            self.hyperparameters[k] = mutation * v
+            self._hyperparameters[k] = mutation * v
 
-        print(json.dumps(self.hyperparameters, indent=2))
+        print(json.dumps(self._hyperparameters, indent=2))
 
     @staticmethod
     def _read_config(config_path):
