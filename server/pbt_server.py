@@ -1,6 +1,5 @@
 import random
 
-from checkpoint import PBTCheckpoint
 from multiprocessing.managers import SyncManager
 
 
@@ -14,6 +13,8 @@ class PBTServer(object):
             maximize_metric: Whether the manager should maximize the metric values,
                 as opposed to minimizing them.
         """
+        auth_key = auth_key.encode('UTF-8')
+
         # Define a manager server to communicate with worker nodes
         class PBTServerManager(SyncManager):
             pass

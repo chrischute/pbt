@@ -9,6 +9,8 @@ from multiprocessing.managers import SyncManager
 class PBTClient(object):
     """Client module for a member of the population to communicate with the server."""
     def __init__(self, client_id, server_ip, server_port, auth_key):
+        auth_key = auth_key.encode('UTF-8')
+
         # Create a manager to communicate with the PBTServer
         class PBTClientManager(SyncManager):
             pass
