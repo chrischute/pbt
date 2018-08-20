@@ -67,7 +67,7 @@ class PBTClient(object):
         return checkpoint
 
     def should_exploit(self):
-        """Check whether this client is underperforming and should exploit another member."""
+        """Check whether this client is under-performing and should exploit another member."""
         should_exploit = literal_eval(str(self._client.should_exploit(self._client_id)))
 
         return should_exploit

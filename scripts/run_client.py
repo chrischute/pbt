@@ -1,4 +1,5 @@
 import argparse
+import random
 
 from client import PBTClient
 
@@ -8,6 +9,8 @@ def main(args):
 
     for _ in range(args.num_epochs):
         client.step()
+
+        client.save('checkpoints/placeholder', metric_value=random.random())
 
         if client.should_exploit():
             # Exploit another member's parameters and hyperparameters
