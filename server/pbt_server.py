@@ -4,7 +4,7 @@ from checkpoint import PBTCheckpoint
 from multiprocessing.managers import SyncManager
 
 
-class PBTManager(object):
+class PBTServer(object):
     """Manager for a population based training session."""
     def __init__(self, port, auth_key='', maximize_metric=True):
         """
@@ -15,13 +15,13 @@ class PBTManager(object):
                 as opposed to minimizing them.
         """
         # Define a manager server to communicate with worker nodes
-        class PBTManagerServer(SyncManager):
+        class PBTServerManager(SyncManager):
             pass
-        PBTManagerServer.register('save', callable=lambda c: self.save(c))
-        PBTManagerServer.register('should_exploit', callable=lambda m: self.should_exploit(m))
-        PBTManagerServer.register('exploit', callable=lambda: self.exploit())
+        PBTServerManager.register('save', callable=lambda c: self.save(c))
+        PBTServerManager.register('should_exploit', callable=lambda m: self.should_exploit(m))
+        PBTServerManager.register('exploit', callable=lambda: self.exploit())
+        self._server = PBTServerManager(address=('', port), authkey=auth_key)
 
-        self._server = PBTManagerServer(address=('', port), authkey=auth_key)
         self._port = port
         self._auth_key = auth_key
         self._maximize_metric = maximize_metric

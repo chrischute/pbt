@@ -6,13 +6,10 @@ from checkpoint import PBTCheckpoint
 from multiprocessing.managers import SyncManager
 
 
-class PBTMember(object):
-    """Member of the population in a population-based training session."""
+class PBTClient(object):
+    """Client module for a member of the population to communicate with the server."""
     def __init__(self, member_id, manager_ip, port, auth_key):
-
-        self.member_id = member_id
-
-        # Create a surrogate to communicate with the PBTManager
+        # Create a manager to communicate with the PBTServer
         class PBTClientManager(SyncManager):
             pass
         PBTClientManager.register('save')
@@ -20,6 +17,8 @@ class PBTMember(object):
         PBTClientManager.register('exploit')
         self.manager = PBTClientManager(address=(manager_ip, port), authkey=auth_key)
         self.manager.connect()
+
+        self.member_id = member_id
 
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
