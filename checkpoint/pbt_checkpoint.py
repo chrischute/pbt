@@ -11,7 +11,7 @@ class PBTCheckpoint(object):
         """
         self._member_id = member_id
         self._metric_value = metric_value
-        self._hyperparameters = {k: v for k, v in hyperparameters.items()}
+        self._hyperparameters = hyperparameters.copy()
         self._parameters_path = parameters_path
 
     def member_id(self):

@@ -47,7 +47,7 @@ class PBTClient(object):
             checkpoint = self._client.exploit()
             if checkpoint.member_id() != self.client_id:
                 print('{}: EXPLOIT({})'.format(self.client_id, checkpoint.member_id()))
-                self.hyperparameters = {k: v for k, v in checkpoint.hyperparameters()}
+                self.hyperparameters = checkpoint.hyperparameters().copy()
                 print(json.dumps(self.hyperparameters, indent=2))
                 return True
 
