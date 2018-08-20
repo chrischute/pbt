@@ -25,43 +25,60 @@ class PBTClient(object):
 
         self._client_id = client_id
         self._hyperparameters = self._read_config(config_path)
+        self._parameters_path = None
         print(json.dumps(self._hyperparameters, indent=2))
 
-    def train_epoch(self):
-        """Train for an epoch (Randomly generate a checkpoint)."""
-        performance = random.random()
-        checkpoint = PBTCheckpoint(self._client_id, performance, self._hyperparameters, 'ckpts/best.pth.tar')
-        self._client.save(checkpoint)
-
+    @staticmethod
+    def step():
+        """Train for an epoch."""
         time.sleep(10.)
 
-        return checkpoint
-
     def exploit(self):
-        """Possibly exploit another member of the population.
-
-        Returns:
-            True if the client exploited another member, otherwise False.
-        """
-        should_exploit = literal_eval(str(self._client.should_exploit(self._client_id)))
-        if should_exploit:
-            checkpoint = self._client.exploit()
-            if checkpoint.member_id() != self._client_id:
-                print('{}: EXPLOIT({})'.format(self._client_id, checkpoint.member_id()))
-                self._hyperparameters = checkpoint.hyperparameters().copy()
-                print(json.dumps(self._hyperparameters, indent=2))
-                return True
-
-        return False
+        """Exploit another member of the population, i.e. copy their parameters and hyperparameters."""
+        checkpoint = self._client.exploit()
+        print('{}: EXPLOIT({})'.format(self._client_id, checkpoint.member_id()))
+        self._hyperparameters = checkpoint.hyperparameters().copy()
+        self._parameters_path = checkpoint.parameters_path()
+        print(json.dumps(self._hyperparameters, indent=2))
 
     def explore(self):
+        """Explore the hyperparameter space, i.e. randomly mutate each hyperparameter."""
         print('{}: EXPLORE'.format(self._client_id))
         for k, v in self._hyperparameters.items():
             mutation = random.choice([0.8, 1.2])
-            print('Mutating {} from {} by {}'.format(k, v, mutation))
             self._hyperparameters[k] = mutation * v
 
         print(json.dumps(self._hyperparameters, indent=2))
+
+    def save(self, parameters_path, metric_value):
+        """Save a checkpoint by sending information to the server.
+
+        Note that weights must be saved to disk outside of the client.
+
+        Args:
+            parameters_path: Path to parameters that have already been saved on disk.
+            metric_value: Value of performance metric for sending to the server.
+        """
+        self._parameters_path = parameters_path
+        checkpoint = PBTCheckpoint(self._client_id, metric_value, self._hyperparameters, self._parameters_path)
+
+        self._client.save(checkpoint)
+
+        return checkpoint
+
+    def should_exploit(self):
+        """Check whether this client is underperforming and should exploit another member."""
+        should_exploit = literal_eval(str(self._client.should_exploit(self._client_id)))
+
+        return should_exploit
+
+    def checkpoint_path(self):
+        """Get the client's current checkpoint path."""
+        return self._parameters_path
+
+    def hyperparameters(self):
+        """Get the client's current hyperparameters."""
+        return self._hyperparameters
 
     @staticmethod
     def _read_config(config_path):

@@ -19,7 +19,7 @@ def main():
         for _ in range(NUM_EPOCHS):
             # Train for an epoch
             for member in clients:
-                member.train_epoch()
+                member.step()
 
             # Exploit and explore
             for member in clients:

@@ -7,10 +7,24 @@ def main(args):
     client = PBTClient(args.client_id, args.server_url, args.server_port, args.auth_key, args.config_path)
 
     for _ in range(args.num_epochs):
-        client.train_epoch()
+        client.step()
 
-        if client.exploit():
+        if client.should_exploit():
+            # Exploit another member's parameters and hyperparameters
+            client.exploit()
+            load_checkpoint(client.checkpoint_path())
+
+            # Explore hyperparameter space
             client.explore()
+            update_hyperparameters(client.hyperparameters())
+
+
+def load_checkpoint(checkpoint_path):
+    pass
+
+
+def update_hyperparameters(hyperparameters):
+    pass
 
 
 if __name__ == '__main__':
