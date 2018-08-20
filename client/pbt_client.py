@@ -71,7 +71,7 @@ class PBTClient(object):
             # Randomly initialize a hyperparameter using the search space from the config file
             hyperparameter_name = str(row['hyperparameter'])
             min_value = float(row['min_value'])
-            max_value = float(row['min_value'])
+            max_value = float(row['max_value'])
             search_scale = str(row['search_scale'])
 
             if search_scale == 'log':
