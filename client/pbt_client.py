@@ -25,6 +25,7 @@ class PBTClient(object):
 
         self.client_id = client_id
         self.hyperparameters = self._read_config(config_path)
+        print(json.dumps(self.hyperparameters, indent=2))
 
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
@@ -55,7 +56,8 @@ class PBTClient(object):
     def explore(self):
         print('{}: EXPLORE'.format(self.client_id))
         for k, v in self.hyperparameters.items():
-            mutation = random.choice((0.8, 1.2))
+            mutation = random.choice([0.8, 1.2])
+            print('Mutation: {}'.format(mutation))
             self.hyperparameters[k] = mutation * v
 
         print(json.dumps(self.hyperparameters, indent=2))
