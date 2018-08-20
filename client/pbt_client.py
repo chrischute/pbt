@@ -76,10 +76,10 @@ class PBTClient(object):
 
             if search_scale == 'log':
                 # Sample randomly along a logarithm search scale
-                min_exp = math.log(min_value, base=10)
-                max_exp = math.log(max_value, base=10)
+                min_exp = math.log(min_value, 10)
+                max_exp = math.log(max_value, 10)
                 random_exp = min_exp + random.random() * (max_exp - min_exp)
-                hyperparameter_value = 10. ** random_exp
+                hyperparameter_value = 10 ** random_exp
             elif search_scale == 'linear':
                 # Sample randomly along a linear search scale
                 hyperparameter_value = min_value + random.random() * (max_value - min_value)
