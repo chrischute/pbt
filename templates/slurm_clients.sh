@@ -4,15 +4,17 @@
 
 #SBATCH --partition=deep
 #SBATCH --time=24:00:00
-#SBATCH --nodes=8
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=16G
+#SBATCH --nodes=16
+#SBATCH --ntasks=16
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=8G
 
-# only use the following on partition with GPUs
+# One GPU per worker
 #SBATCH --gres=gpu:1
 
 #SBATCH --job-name="pbt"
-#SBATCH --output=pbt-%j.out
+#SBATCH --output=pbt%j.out
 
 # Send email when the job begins, fails, or ends
 #SBATCH --mail-user=chute@stanford.edu
