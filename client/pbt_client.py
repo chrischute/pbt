@@ -57,7 +57,7 @@ class PBTClient(object):
         print('{}: EXPLORE'.format(self.client_id))
         for k, v in self.hyperparameters.items():
             mutation = random.choice([0.8, 1.2])
-            print('Mutation: {}'.format(mutation))
+            print('Mutating {} from {} by {}'.format(k, v, mutation))
             self.hyperparameters[k] = mutation * v
 
         print(json.dumps(self.hyperparameters, indent=2))
