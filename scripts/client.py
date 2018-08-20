@@ -1,11 +1,10 @@
 import argparse
-import util
 
 from client import PBTClient
 
 
 def main(args):
-    client = PBTClient(args.client_id, args.server_url, args.server_port, args.auth_key)
+    client = PBTClient(args.client_id, args.server_url, args.server_port, args.auth_key, args.config_path)
 
     for _ in range(args.num_epochs):
         client.train_epoch()
@@ -27,7 +26,7 @@ if __name__ == '__main__':
     parser.add_argument('--auth_key', type=str, default='insecure',
                         help='Key for clients to authenticate with server.')
     parser.add_argument('--config_path', type=str, required=True,
-                        help='Path to configuration file with hyperparameters (see templates).')
+                        help='Path to configuration file defining hyperparameter search space (see templates).')
 
     # Training Settings
     parser.add_argument('--num_epochs', type=int, default=10,

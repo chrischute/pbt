@@ -1,3 +1,6 @@
+import json
+import math
+import pandas as pd
 import random
 import time
 
@@ -8,7 +11,7 @@ from multiprocessing.managers import SyncManager
 
 class PBTClient(object):
     """Client module for a member of the population to communicate with the server."""
-    def __init__(self, client_id, server_ip, server_port, auth_key):
+    def __init__(self, client_id, server_ip, server_port, auth_key, config_path):
         auth_key = auth_key.encode('UTF-8')
 
         # Create a manager to communicate with the PBTServer
@@ -21,6 +24,9 @@ class PBTClient(object):
         self._client.connect()
 
         self.client_id = client_id
+        self.hyperparameters = self._read_config(config_path)
+
+        print(json.dumps(self.hyperparameters, indent=2))
 
     def train_epoch(self):
         """Train for an epoch (Randomly generate a checkpoint)."""
@@ -47,3 +53,39 @@ class PBTClient(object):
 
     def explore(self):
         print('{}: EXPLORE'.format(self.client_id))
+
+    @staticmethod
+    def _read_config(config_path):
+        """Read a configuration file of hyperparameters.
+
+        Args:
+            config_path: Path to CSV configuration file.
+
+        Returns:
+            Dictionary of hyperparameters, randomly initialized in the search space.
+        """
+        hyperparameters = {}
+
+        config_df = pd.read_csv(config_path)
+        for _, row in config_df.iterrows():
+            # Randomly initialize a hyperparameter using the search space from the config file
+            hyperparameter_name = str(row['hyperparameter'])
+            min_value = float(row['min_value'])
+            max_value = float(row['min_value'])
+            search_scale = str(row['search_scale'])
+
+            if search_scale == 'log':
+                # Sample randomly along a logarithm search scale
+                min_exp = math.log(min_value, base=10)
+                max_exp = math.log(max_value, base=10)
+                random_exp = min_exp + random.random() * (max_exp - min_exp)
+                hyperparameter_value = 10. ** random_exp
+            elif search_scale == 'linear':
+                # Sample randomly along a linear search scale
+                hyperparameter_value = min_value + random.random() * (max_value - min_value)
+            else:
+                raise ValueError('Expected "log" or "linear" search scale, got "{}"'.format(search_scale))
+
+            hyperparameters[hyperparameter_name] = hyperparameter_value
+
+        return hyperparameters
