@@ -21,6 +21,7 @@ class PBTServer(object):
         PBTServerManager.register('save', callable=lambda c: self.save(c))
         PBTServerManager.register('should_exploit', callable=lambda m: self.should_exploit(m))
         PBTServerManager.register('exploit', callable=lambda: self.exploit())
+        PBTServerManager.register('get_id', callable=lambda: self.get_id())
         self._server = PBTServerManager(address=('', port), authkey=auth_key)
 
         self._port = port
@@ -31,6 +32,13 @@ class PBTServer(object):
         self._truncation_ratio = 0.2   # Ratio of population for truncation selection
 
         self._server.start()
+
+    def get_id(self):
+        """Get the next available ID for a client."""
+        client_id = self.num_clients
+        self.num_clients += 1
+
+        return client_id
 
     def save(self, checkpoint):
         """Save a checkpoint with model performance.

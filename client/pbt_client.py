@@ -11,7 +11,7 @@ from multiprocessing.managers import SyncManager
 
 class PBTClient(object):
     """Client module for a member of the population to communicate with the server."""
-    def __init__(self, client_id, server_ip, server_port, auth_key, config_path):
+    def __init__(self, server_ip, server_port, auth_key, config_path):
         auth_key = auth_key.encode('UTF-8')
 
         # Create a manager to communicate with the PBTServer
@@ -20,10 +20,12 @@ class PBTClient(object):
         PBTClientManager.register('save')
         PBTClientManager.register('should_exploit')
         PBTClientManager.register('exploit')
+        PBTClientManager.register('get_id')
+
         self._client = PBTClientManager(address=(server_ip, server_port), authkey=auth_key)
         self._client.connect()
 
-        self._client_id = client_id
+        self._client_id = int(str(self._client.get_id()))
         self._hyperparameters = self._read_config(config_path)
         self._parameters_path = None
         print(json.dumps(self._hyperparameters, indent=2))

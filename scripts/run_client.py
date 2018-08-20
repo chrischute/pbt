@@ -5,7 +5,7 @@ from client import PBTClient
 
 
 def main(args):
-    client = PBTClient(args.client_id, args.server_url, args.server_port, args.auth_key, args.config_path)
+    client = PBTClient(args.server_url, args.server_port, args.auth_key, args.config_path)
 
     for _ in range(args.num_epochs):
         client.step()
