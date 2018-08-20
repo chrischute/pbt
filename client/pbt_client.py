@@ -41,7 +41,3 @@ class PBTClient(object):
 
     def explore(self):
         print('{}: EXPLORE'.format(self.member_id))
-
-    def shut_down(self):
-        """Shut down the connection to the server."""
-        self._client.shutdown()

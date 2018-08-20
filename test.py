@@ -27,8 +27,6 @@ def main():
                     member.explore()
 
     finally:
-        for client in clients:
-            client.shut_down()
         server.shut_down()
 
 
