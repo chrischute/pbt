@@ -1,3 +1,6 @@
+import random
+import time
+
 from server import PBTServer
 from client import PBTClient
 
@@ -15,16 +18,27 @@ def main():
     clients = [PBTClient(member_id, IP, PORT, AUTH_KEY) for member_id in range(NUM_MEMBERS)]
 
     try:
-        # Simulate some epochs
-        for _ in range(NUM_EPOCHS):
-            # Train for an epoch
-            for member in clients:
-                member.step()
+        for pbt_client in clients:
 
-            # Exploit and explore
-            for member in clients:
-                if member.exploit():
-                    member.explore()
+            # TODO: TRAIN FOR AN EPOCH
+            time.sleep(10)
+
+            # TODO: EVALUATE MODEL AND SAVE PARAMETERS TO SHARED DATA STORE
+            ckpt_path = 'checkpoint/placeholder'
+            metric_val = random.random()
+
+            pbt_client.save(ckpt_path, metric_val)
+            if pbt_client.should_exploit():
+                # Copy parameters from another network
+                pbt_client.exploit()
+
+                # TODO: LOAD MODEL PARAMETERS FROM SHARED DATA STORE
+
+                # Explore and update hyperparameters
+                pbt_client.explore()
+                hyperparameters = pbt_client.hyperparameters()
+
+                # TODO: UPDATE YOUR OPTIMIZER AND MODEL WITH HYPERPARAMETERS
 
     finally:
         server.shut_down()

@@ -28,11 +28,6 @@ class PBTClient(object):
         self._hyperparameters = self._read_config(config_path)
         self._parameters_path = None
 
-    @staticmethod
-    def step():
-        """Train for an epoch."""
-        time.sleep(10.)
-
     def exploit(self):
         """Exploit another member of the population, i.e. copy their parameters and hyperparameters."""
         checkpoint = self._client.exploit()
@@ -75,6 +70,10 @@ class PBTClient(object):
         """Get the client's current hyperparameters."""
         return self._hyperparameters
 
+    def set_hyperparameter(self, hyperparameter_name, hyperparameter_value):
+        """Set a hyperparameter."""
+        self._hyperparameters[hyperparameter_name] = hyperparameter_value
+
     @staticmethod
     def _read_config(config_path):
         """Read a configuration file of hyperparameters.
@@ -90,10 +89,10 @@ class PBTClient(object):
         config_df = pd.read_csv(config_path)
         for _, row in config_df.iterrows():
             # Randomly initialize a hyperparameter using the search space from the config file
-            hyperparameter_name = str(row['hyperparameter'])
-            min_value = float(row['min_value'])
-            max_value = float(row['max_value'])
-            search_scale = str(row['search_scale'])
+            hyperparameter_name = str(row['name'])
+            min_value = float(row['min'])
+            max_value = float(row['max'])
+            search_scale = str(row['scale'])
 
             if search_scale == 'log':
                 # Sample randomly along a logarithm search scale

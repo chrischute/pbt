@@ -1,4 +1,5 @@
 import argparse
+import time
 import random
 
 from client import PBTClient
@@ -8,7 +9,7 @@ def main(args):
     client = PBTClient(args.server_url, args.server_port, args.auth_key, args.config_path)
 
     for _ in range(args.num_epochs):
-        client.step()
+        time.sleep(10)
 
         client.save('checkpoints/placeholder', metric_value=random.random())
 
@@ -40,7 +41,7 @@ if __name__ == '__main__':
                         help='Port on which the server listens for clients.')
     parser.add_argument('--auth_key', type=str, default='insecure',
                         help='Key for clients to authenticate with server.')
-    parser.add_argument('--config_path', type=str, required=True,
+    parser.add_argument('--config_path', type=str, default='templates/hyperparameters.csv',
                         help='Path to configuration file defining hyperparameter search space (see templates).')
 
     # Training Settings

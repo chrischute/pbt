@@ -31,8 +31,9 @@ class PBTServer(object):
         self._maximize_metric = maximize_metric
         self._verbose = verbose
 
-        self._checkpoints = {}  # Maps member ID -> list of PBTCheckpoints
+        self._checkpoints = {}         # Maps member ID -> list of PBTCheckpoints
         self._truncation_ratio = 0.2   # Ratio of population for truncation selection
+        self._min_population_size = 5  # Minimum population size before members can exploit
         self._num_clients = 0
 
         self._server.start()
@@ -54,13 +55,18 @@ class PBTServer(object):
         """
         if checkpoint.client_id() not in self._checkpoints:
             self._checkpoints[checkpoint.client_id()] = []
+
+        checkpoint = checkpoint.copy()
         self._checkpoints[checkpoint.client_id()].append(checkpoint)
 
         self._write('{}: Saved checkpoint (performance: {})'.format(checkpoint.client_id(), checkpoint.metric_value()))
         self._write(json.dumps(checkpoint.hyperparameters(), indent=2))
 
     def should_exploit(self, client_id):
-        """Check whether a client should exploit another member of the population
+        """Check whether a client should exploit another member of the population.
+
+        A member should exploit another when the member's most recent performance is
+        in the bottom 20% of most recent performance of the whole population.
 
         Args:
             client_id: ID of client asking whether it should exploit another member.
@@ -68,8 +74,11 @@ class PBTServer(object):
         Returns:
             True if client is under-performing and should exploit another member.
         """
+        if len(self._checkpoints) < self._min_population_size:
+            return False
+
         first_surviving_idx = max(1, int(self._truncation_ratio * len(self._checkpoints)))
-        checkpoints = self._sorted_best_checkpoints(best_first=False)
+        checkpoints = self._sorted_checkpoints(best_first=False)
         for checkpoint in checkpoints[:first_surviving_idx]:
             if checkpoint.client_id() == client_id:
                 self._write('{}: Should exploit'.format(client_id))
@@ -84,10 +93,10 @@ class PBTServer(object):
             Dict of checkpoint randomly sampled from the top performers of the population.
         """
         first_ineligible_idx = max(1, int(self._truncation_ratio * len(self._checkpoints)))
-        checkpoints = self._sorted_best_checkpoints(best_first=True)
+        checkpoints = self._sorted_checkpoints(best_first=True)
         exploited_checkpoint = random.choice(checkpoints[:first_ineligible_idx])
 
-        self._write('{}: Got exploited'.format(exploited_checkpoint.client_id()))
+        self._write('{}: Exploited'.format(exploited_checkpoint.client_id()))
 
         return exploited_checkpoint
 
@@ -99,9 +108,8 @@ class PBTServer(object):
         """Shut down the server."""
         self._server.shutdown()
 
-    def _get_best_checkpoint(self, client_id):
-        """Get the best checkpoint for a member of the population,
-        as rated by checkpoint metric values.
+    def _get_most_recent_checkpoint(self, client_id):
+        """Get the most recent checkpoint for a member of the population.
 
         Args:
             client_id: ID of the client whose checkpoints will be considered.
@@ -112,27 +120,25 @@ class PBTServer(object):
         if client_id not in self._checkpoints or len(self._checkpoints[client_id]) == 0:
             raise ValueError('_get_best_checkpoint called on a member with no registered checkpoints.')
 
-        if self._maximize_metric:
-            best_checkpoint = max(self._checkpoints[client_id])
-        else:
-            best_checkpoint = min(self._checkpoints[client_id])
+        checkpoint = self._checkpoints[client_id][-1]
 
-        return best_checkpoint
+        return checkpoint
 
-    def _sorted_best_checkpoints(self, best_first=True):
-        """Get best checkpoints (i.e., best one per member) in sorted order.
+    def _sorted_checkpoints(self, best_first=True):
+        """Get a sorted list of the most recent checkpoint per member. List sorted in order of performance.
 
         Args:
-            best_first: Sort such that the best members of the population come first.
+            best_first: Sort such that the best come first.
 
         Returns:
             List of best checkpoints for all members.
         """
-        best_checkpoints = [self._get_best_checkpoint(client_id) for client_id in self._checkpoints]
-        sorted_best_checkpoints = list(sorted(best_checkpoints, reverse=(best_first == self._maximize_metric)))
+        most_recent_checkpoints = [self._get_most_recent_checkpoint(client_id) for client_id in self._checkpoints]
+        sorted_checkpoints = list(sorted(most_recent_checkpoints, reverse=(best_first == self._maximize_metric)))
 
-        return sorted_best_checkpoints
+        return sorted_checkpoints
 
     def _write(self, s):
+        """Handle a write to the console. No write if not in verbose mode."""
         if self._verbose:
             print(s)
