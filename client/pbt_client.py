@@ -1,11 +1,10 @@
-import json
 import math
 import pandas as pd
 import random
 import time
 
 from ast import literal_eval
-from checkpoint import PBTCheckpoint
+from pbt.checkpoint import PBTCheckpoint
 from multiprocessing.managers import SyncManager
 
 
@@ -28,7 +27,6 @@ class PBTClient(object):
         self._client_id = int(str(self._client.get_id()))
         self._hyperparameters = self._read_config(config_path)
         self._parameters_path = None
-        print(json.dumps(self._hyperparameters, indent=2))
 
     @staticmethod
     def step():
@@ -38,19 +36,14 @@ class PBTClient(object):
     def exploit(self):
         """Exploit another member of the population, i.e. copy their parameters and hyperparameters."""
         checkpoint = self._client.exploit()
-        print('{}: EXPLOIT({})'.format(self._client_id, checkpoint.member_id()))
         self._hyperparameters = checkpoint.hyperparameters().copy()
         self._parameters_path = checkpoint.parameters_path()
-        print(json.dumps(self._hyperparameters, indent=2))
 
     def explore(self):
         """Explore the hyperparameter space, i.e. randomly mutate each hyperparameter."""
-        print('{}: EXPLORE'.format(self._client_id))
         for k, v in self._hyperparameters.items():
             mutation = random.choice([0.8, 1.2])
             self._hyperparameters[k] = mutation * v
-
-        print(json.dumps(self._hyperparameters, indent=2))
 
     def save(self, parameters_path, metric_value):
         """Save a checkpoint by sending information to the server.
@@ -74,7 +67,7 @@ class PBTClient(object):
 
         return should_exploit
 
-    def checkpoint_path(self):
+    def parameters_path(self):
         """Get the client's current checkpoint path."""
         return self._parameters_path
 

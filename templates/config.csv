@@ -1,4 +1,4 @@
 hyperparameter,min_value,max_value,search_scale
-lr,0.0001,0.1,log
+regular_lr,0.0001,0.1,log
+fine_tuning_lr,0.00001,0.01,log
 weight_decay,0.00001,0.001,log
-dropout,0.8,0.2,linear
