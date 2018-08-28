@@ -1,0 +1,10 @@
+name: pbt
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pyro4
+  - numpy
+  - pandas
+  - pip
+  - python=3.7
