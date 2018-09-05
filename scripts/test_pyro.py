@@ -10,11 +10,13 @@ def main(args):
     if args.name_server:
         if not args.host:
             raise ValueError('Must specify host when running name server.')
+        print('Starting name server on host {}...'.format(args.host))
         Pyro4.naming.startNS(args.host)
     elif args.warehouse:
         # Start Pyro4 daemon
         if not args.host:
             raise ValueError('Must specify host when running warehouse.')
+        print('Starting warehouse on host {}...'.format(args.host))
         Pyro4.Daemon.serveSimple({Warehouse: "example.warehouse"},
                                  host=args.host,
                                  ns=True)
@@ -76,8 +78,8 @@ class Person(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--name_server', action='store_true', default='Run the name server.')
-    parser.add_argument('--warehouse', action='store_true', default='Run the warehouse rather than visiting.')
+    parser.add_argument('--name_server', action='store_true', help='Run the name server.')
+    parser.add_argument('--warehouse', action='store_true', help='Run the warehouse rather than visiting.')
     parser.add_argument('--host', type=str, help='Host/IP of the warehouse daemon.')
 
     main(parser.parse_args())
