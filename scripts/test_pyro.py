@@ -76,6 +76,7 @@ class Person(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--name_server', action='store_true', default='Run the name server.')
     parser.add_argument('--warehouse', action='store_true', default='Run the warehouse rather than visiting.')
     parser.add_argument('--host', type=str, help='Host/IP of the warehouse daemon.')
 
