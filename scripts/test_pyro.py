@@ -1,14 +1,23 @@
 import argparse
 import Pyro4
+import Pyro4.naming
 import Pyro4.util
 import sys
 
 
 def main(args):
 
-    if args.warehouse:
+    if args.name_server:
+        if not args.host:
+            raise ValueError('Must specify host when running name server.')
+        Pyro4.naming.startNS(args.host)
+    elif args.warehouse:
         # Start Pyro4 daemon
-        Pyro4.Daemon.serveSimple({Warehouse: "example.warehouse"}, ns=True)
+        if not args.host:
+            raise ValueError('Must specify host when running warehouse.')
+        Pyro4.Daemon.serveSimple({Warehouse: "example.warehouse"},
+                                 host=args.host,
+                                 ns=True)
     else:
         sys.excepthook = Pyro4.util.excepthook
 
@@ -67,6 +76,7 @@ class Person(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--warehouse', action='store_true')
+    parser.add_argument('--warehouse', action='store_true', default='Run the warehouse rather than visiting.')
+    parser.add_argument('--host', type=str, help='Host/IP of the warehouse daemon.')
 
     main(parser.parse_args())
