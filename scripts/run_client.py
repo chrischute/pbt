@@ -41,8 +41,8 @@ if __name__ == '__main__':
                         help='Port on which the server listens for clients.')
     parser.add_argument('--auth_key', type=str, default='insecure',
                         help='Key for clients to authenticate with server.')
-    parser.add_argument('--config_path', type=str, default='templates/hyperparameters.csv',
-                        help='Path to configuration file defining hyperparameter search space (see templates).')
+    parser.add_argument('--config_path', type=str, default='examples/hyperparameters.csv',
+                        help='Path to configuration file defining hyperparameter search space (see examples).')
 
     # Training Settings
     parser.add_argument('--num_epochs', type=int, default=10,
